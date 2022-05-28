@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("DATABASE_URL")
+}
+
+enum UserType {
+  USER
+  ADMIN
+}
+
+model User {
+  id            Int       @id @default(autoincrement())
+  fname         String?
+  lname         String?
+  email         String    @unique
+  password      String
+  image         String?
+  adress        String?
+  role          UserType
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  emailVerified String
+  status        String
+  Order         Order[]
+  Product       Product[]
+  Comment       Comment[]
+}
+
+model Product {
+  id          Int       @id @default(autoincrement())
+  title       String?
+  description String?
+  price       String
+  image       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  status      String
+  Order       Order[]
+  userId      Int
+  user        User      @relation(fields: [userId], references: [id])
+  Comment     Comment[]
+}
+
+model Category {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  productId Int
+  product   Product  @relation(fields: [productId], references: [id])
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  status    String
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  comments  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId    Int
+  productId Int
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+}
+
+model AdminSetting {
+  id            Int      @id @default(autoincrement())
+  settingsName  String
+  settingsValue String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
