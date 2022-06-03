@@ -16,6 +16,11 @@ enum UserType {
   ADMIN
 }
 
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id            Int       @id @default(autoincrement())
   fname         String?
@@ -24,11 +29,12 @@ model User {
   password      String
   image         String?
   adress        String?
+  phone         String?
   role          UserType
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  emailVerified String
-  status        String
+  emailVerified Status
+  status        Status
   Order         Order[]
   Product       Product[]
   Comment       Comment[]
@@ -42,7 +48,8 @@ model Product {
   image       String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  status      String
+  status      Status
+  featured    Status
   Order       Order[]
   userId      Int
   user        User      @relation(fields: [userId], references: [id])
@@ -55,7 +62,7 @@ model Category {
   image     String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  status    String
+  status    Status
 }
 
 model Order {
@@ -66,7 +73,7 @@ model Order {
   user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  status    String
+  status    Status
 }
 
 model Comment {
@@ -78,6 +85,7 @@ model Comment {
   productId Int
   user      User     @relation(fields: [userId], references: [id])
   product   Product  @relation(fields: [productId], references: [id])
+  status    Status
 }
 
 model AdminSetting {
