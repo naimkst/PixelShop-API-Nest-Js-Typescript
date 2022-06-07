@@ -13,7 +13,7 @@ import { join } from 'path';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Post()
+  @Post('register')
   @UseInterceptors(FileInterceptor('image', {
     storage: diskStorage({
       destination: './uploads',
@@ -37,6 +37,11 @@ export class UserController {
     return this.userService.create({
       createUserDto,
     }, image.filename);
+  }
+
+  @Post('login')
+  async signIn(@Body() createUserDto: CreateUserDto) {
+    return this.userService.signIn(createUserDto);
   }
 
   @Get()
