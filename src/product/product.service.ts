@@ -31,7 +31,45 @@ export class ProductService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    const remove = await this.prismaService.product.delete({
+      where: {
+        id,
+      }
+    })
+    console.log(remove);
+    return this.prismaService.product.findMany();
+  }
+
+  async postPaginate(params: {
+    skip?: number;
+    take?: number;
+    search?: string;
+  }) {
+    const { skip, take, search } = params;
+
+    const countPost = await this.prismaService.product.count();
+    const paginateButton = Math.ceil(countPost / take);
+
+    console.log(skip, take, countPost, paginateButton);
+    if (isNaN(skip)) {
+      return await this.prismaService.product.findMany({
+        take,
+      });
+    } else {
+      const paginateData = await this.prismaService.product.findMany({
+        skip,
+        take,
+        where: {
+          title: {
+            contains: search,
+          },
+        },
+      });
+      return {
+        totalPage: paginateButton,
+        data: paginateData,
+      };
+    }
   }
 }

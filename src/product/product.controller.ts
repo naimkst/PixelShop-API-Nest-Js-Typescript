@@ -8,6 +8,8 @@ import {
   Delete,
   UseInterceptors,
   UploadedFile,
+  Response,
+  Query,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -58,18 +60,33 @@ export class ProductController {
     return this.productService.findAll();
   }
 
-  @Get(':id')
+  @Get('/find/:id')
   findOne(@Param('id') id: string) {
     return this.productService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('/update/:id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
     return this.productService.update(+id, updateProductDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productService.remove(+id);
+  @Delete('/delete/:id')
+  remove(@Param('id') id: number) {
+    return this.productService.remove(id);
+  }
+
+  @Get('/image/:image')
+  postImage(@Param('image') image: string, @Response() res) {
+    return of(res.sendFile(join(process.cwd(), 'uploads', image)));
+  }
+
+  @Get('paginate')
+  async postPaginate(@Query('skip') skip: string, @Query('take') take: string,  @Query('search') search: string) {
+    return await this.productService.postPaginate(
+      {
+        skip: Number(skip), 
+        take: Number(take),
+        search: String(search)
+      });
   }
 }
