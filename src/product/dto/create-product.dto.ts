@@ -42,4 +42,8 @@ export class CreateProductDto {
   @IsEnum(Status)
   featured: string
 
+  @IsNumber()
+  @IsOptional()
+  categoryId?: number
+
 }

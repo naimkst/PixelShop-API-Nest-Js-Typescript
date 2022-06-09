@@ -61,13 +61,31 @@ export class ProductController {
   }
 
   @Get('/find/:id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  findOne(@Param('id') id: number) {
+    return this.productService.findOne(id);
   }
 
-  @Patch('/update/:id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
-    return this.productService.update(+id, updateProductDto);
+  @Post('/update/:id')
+  @UseInterceptors(FileInterceptor('image', {
+    storage: diskStorage({
+      destination: './uploads',
+      filename: (req, image, cb) => {
+        console.log(image, cb);
+        const filename: string = path?.parse(image?.originalname).name.replace(/\s/g, '') + uuidv4();
+        const extension: string = path?.parse(image?.originalname).ext;
+        cb(null, `${filename}${extension}`)
+      }
+    })
+  }))
+  update(@Param('id') id: number, @Body() updateProductDto: UpdateProductDto, @UploadedFile() image) {
+    console.log(updateProductDto, "Image:",image)
+    console.log('Post Controller #######',image);
+    if(image == undefined ){
+      return this.productService.update(id,{
+        updateProductDto });
+    }
+    return this.productService.update(id,{
+      updateProductDto }, image.filename);
   }
 
   @Delete('/delete/:id')

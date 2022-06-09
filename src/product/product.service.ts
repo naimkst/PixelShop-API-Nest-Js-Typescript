@@ -23,12 +23,25 @@ export class ProductService {
     return `This action returns all product`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: number) {
+    return await this.prismaService.product.findUnique({
+      where:{
+        id: id
+      }
+    });
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  update(id: number, {updateProductDto: UpdateProductDto}, image?: any) {
+    console.log(UpdateProductDto, "Image:",image)
+    return this.prismaService.product.update({
+      where: {
+        id: id
+      },
+      data:{
+        ...UpdateProductDto,
+        image: image,
+      }
+    });
   }
 
   async remove(id: number) {
