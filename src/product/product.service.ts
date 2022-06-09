@@ -14,10 +14,7 @@ export class ProductService {
     return this.prismaService.product.create({
       data: {
         ...CreateProductDto,
-        status: Status.ACTIVE,
-        featured: Status.ACTIVE,
         image: image,
-        userId: 1
       },
     });
   }

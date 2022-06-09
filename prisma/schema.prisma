@@ -52,17 +52,20 @@ model Product {
   featured    Status
   Order       Order[]
   userId      Int?
-  user        User?      @relation(fields: [userId], references: [id])
+  user        User?     @relation(fields: [userId], references: [id])
+  categoryId  Int?
+  category    Category? @relation(fields: [categoryId], references: [id])
   Comment     Comment[]
 }
 
 model Category {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   title     String?
   image     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
   status    Status
+  Product   Product[]
 }
 
 model Order {

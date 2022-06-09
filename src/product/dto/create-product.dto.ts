@@ -34,4 +34,12 @@ export class CreateProductDto {
   @IsOptional()
   userId?: number
 
+  @IsString()
+  @IsEnum(Status)
+  status: string
+
+  @IsString()
+  @IsEnum(Status)
+  featured: string
+
 }
